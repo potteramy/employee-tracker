@@ -19,20 +19,7 @@ const db = mysql.createConnection(
     database: 'employee_db'
   }
 );
-/*
-Here are some hints about how to go about the multi-join query needed
-in at least one part of the MySQL homework
-Here’s a quick glance at how the tables reference each other:
-employee      id       role_id     manager_id
-role          id       dept_id
-department    id
-Here’s an incomplete join statement to get you started
-SELECT ...
-FROM employee e
-LEFT JOIN role r ON e.role_id = r.id
-LEFT JOIN
-LEFT JOIN employee manager ON xxxxxx.id = employee.xxxxxxx
-*/
+
 
 
 app.use((req, res) => {
@@ -43,3 +30,38 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+async function getEmployeesByDept(){
+  // query for all the departments
+  const departments = await mysql.query("SELECT id AS key, name AS value FROM departments")
+
+  inquirer.prompt([
+    {
+      message: "Choose the department:",
+      type: "rawList",
+      choices: function(){
+        return departments.map( item => {
+          return {
+            key: item.id,
+            value: item.name
+          }
+        } )
+      }
+    }
+
+    {
+      message: "Choose the department:",
+      type: "rawList",
+      choices: function(){
+        return departments.map( item => ({ key: item.id, value: item.name }) )
+      }
+    }
+
+
+    {
+      message: "Choose the department:",
+      type: "rawList",
+      choices: () => departments.map( item => ({ key: item.id, value: item.name }) )
+    }
+  ])
+}
