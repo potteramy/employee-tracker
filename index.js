@@ -1,35 +1,7 @@
-const express = require('express');
-const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
-const app = express();
-const inquirer = require('inquirer')
-const cTable = require('console.table')
-
-app.use(express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/api', api);
+const inquirer = require('inquirer');
+const cTable = require('console.table');
+const mysql = require('./db/connection');
 app.use(cTable);
-
-const db = mysql.createConnection(
-  {
-    host: 'localhost',
-    user: 'root',
-    password: 
-    database: 'employee_db'
-  }
-);
-
-
-
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 async function getEmployeesByDept(){
   // query for all the departments
