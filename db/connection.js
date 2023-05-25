@@ -9,7 +9,7 @@ const db = mysql.createConnection(
     host: 'localhost',
     user: 'root',
     password: password,
-    database: 'employee_db'
+    database: 'employeeTracker_db'
   }
 );
 db.connect(function (err) {

@@ -3,21 +3,6 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const db = require('./db/connection');
 
-// async function getEmployeesByDept(){
-//   // query for all the departments
-//   const departments = await mysql.query("SELECT id AS key, name AS value FROM departments")
-
-//   inquirer.prompt([
-
-
-
-//     {
-//       message: "Choose the department:",
-//       type: "rawList",
-//       choices: () => departments.map( item => ({ key: item.id, value: item.name }) )
-//     }
-//   ])
-// }
 
 let mainPrompts = [
   'View all departments',
@@ -72,6 +57,7 @@ function allDepartments() {
     }
     const table = cTable.getTable(rows)
     console.log(table)
+    mainPrompt()
   })
 }
 function allRoles() {
@@ -82,6 +68,7 @@ function allRoles() {
     }
     const table = cTable.getTable(rows)
     console.log(table)
+    mainPrompt()
   })
 }
 function allEmployees(){
@@ -92,6 +79,7 @@ function allEmployees(){
     }
     const table = cTable.getTable(rows)
     console.log(table)
+    mainPrompt()
   })
 }
 function addDepartment(){
@@ -107,16 +95,94 @@ function addDepartment(){
         console.log(err)
       }
       allDepartments()
+      mainPrompt()
     })
   })
 }
 function addRole(){
-
+  const sql = `INSERT INTO roles (title, salary)
+  VALUES(?,?)`
+  inquirer.prompt([{
+    type: 'input',
+    message: 'What role would you like to add?',
+    name: "title"
+  },
+  {
+    type: 'input',
+    message: 'What is the salary for this role?',
+    name: "salary"
+  },
+  {
+    type: 'input',
+    message: 'What is the department ID for this role?',
+    name: "department_id"
+  }
+]).then(({title, salary, department_id})=>{
+    db.query(sql, [title, salary, department_id], (err, rows) => {
+      if (err) {
+        console.log(err)
+      }
+      allRoles()
+      mainPrompt()
+    })
+  })
 }
 function addEmployee(){
-
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+  VALUES(?,?,?,?)`;
+  inquirer.prompt([{
+    type: 'input',
+    message: 'Employee first name:',
+    name: "first_name"
+  },
+  {
+    type: 'input',
+    message: 'Employee last name:',
+    name: 'last_name'
+  },
+  {
+    type: 'input',
+    message: 'Enter a role id',
+    name: 'role_id'
+  },
+  {
+    type: 'input',
+    message: 'Enter a manager id',
+    name: 'manager_id'
+  }
+  ]).then(({ first_name, last_name, role_id, manager_id })=>{
+    db.query(sql,[first_name, last_name, role_id, manager_id ], (err, rows) => {
+      if (err) {
+        console.log(err)
+      }
+      allEmployees()
+      mainPrompt()
+    })
+  })
 }
 function updateEmpRole(){
+  const sql = `UPDATE employee
+  SET role_id = ?
+  WHERE id = ?`;
 
+  inquirer.prompt([
+    {
+      type: 'input',
+      message: 'Enter the employee ID:',
+      name: 'id'
+    },
+    {
+      type: 'input',
+      message: 'Enter the new role ID:',
+      name: 'role_id'
+    }
+  ]).then(({id, role_id})=> {
+    db.query(sql, [role_id, id], (err, rows) => {
+      if (err) {
+        console.log(err);
+      }
+      allEmployees()
+    })
+  })
 }
 init()
