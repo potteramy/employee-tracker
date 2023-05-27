@@ -94,7 +94,6 @@ function addDepartment(){
       if (err) {
         console.log(err)
       }
-      allDepartments()
       mainPrompt()
     })
   })
@@ -122,7 +121,6 @@ function addRole(){
       if (err) {
         console.log(err)
       }
-      allRoles()
       mainPrompt()
     })
   })
@@ -155,7 +153,6 @@ function addEmployee(){
       if (err) {
         console.log(err)
       }
-      allEmployees()
       mainPrompt()
     })
   })
@@ -181,7 +178,7 @@ function updateEmpRole(){
       if (err) {
         console.log(err);
       }
-      allEmployees()
+      mainPrompt()
     })
   })
 }
